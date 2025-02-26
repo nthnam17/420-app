@@ -1,16 +1,16 @@
 @import './base.css';
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
 body {
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background-image: url('./wavy-lines.svg');
+  background-color: #fff;
+  /* background-image: url('./wavy-lines.svg'); */
   background-size: cover;
   user-select: none;
+  width: 100vw;
 }
 
 code {
@@ -35,9 +35,10 @@ code {
   justify-content: center;
   flex-direction: column;
   margin-bottom: 80px;
+  width: 100vw;
 }
 
-.logo {
+/* .logo {
   margin-bottom: 20px;
   -webkit-user-drag: none;
   height: 128px;
@@ -171,4 +172,4 @@ code {
   .actions {
     display: none;
   }
-}
+} */
