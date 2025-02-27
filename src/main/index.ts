@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { connectToDb } from './config'
 import { setController } from './modules/controllers'
+import hanldeFileWork from './worker'
 
 function createWindow(): void {
   // Create the browser window.
@@ -55,6 +56,7 @@ app.whenReady().then(async () => {
   ipcMain.on('ping', () => console.log('pong'))
 
   setController()
+  hanldeFileWork()
   await connectToDb()
 
   createWindow()

@@ -4,6 +4,7 @@ import UsersPage from '@renderer/pages/users'
 import PostsPage from '@renderer/pages/posts'
 import PrivateRoute from '@renderer/middleware/navigate'
 import LoginPage from '@renderer/pages/login'
+import WorkerPage from '@renderer/pages/worker'
 
 const Menu = () => {
   return (
@@ -23,7 +24,12 @@ const Menu = () => {
             </li>
             <li>
               <Link to="/posts" className="text-white hover:text-gray-200 px-1">
-                Posts
+                Do Some Think
+              </Link>
+            </li>
+            <li>
+              <Link to="/worker" className="text-white hover:text-gray-200 px-1">
+                Worker
               </Link>
             </li>
           </ul>
@@ -55,6 +61,16 @@ const Menu = () => {
             <PrivateRoute>
               {' '}
               <PostsPage></PostsPage>{' '}
+            </PrivateRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/worker"
+          element={
+            <PrivateRoute>
+              {' '}
+              <WorkerPage></WorkerPage>{' '}
             </PrivateRoute>
           }
         ></Route>
