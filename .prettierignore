@@ -1,6 +1,10 @@
 out
 dist
+libs
+src/renderer/src/assets
+src/renderer/src
 pnpm-lock.yaml
 LICENSE.md
 tsconfig.json
 tsconfig.*.json
+eslintrc

@@ -11,6 +11,18 @@ export class Users {
   @Column({ type: 'text' })
   username: string
 
+  @Column({ type: 'text', nullable: true })
+  avartar: string
+
+  @Column({ type: 'text', nullable: true })
+  token: string
+
+  @Column({ type: 'text', nullable: true })
+  cookie: string
+
+  @Column({ type: 'text', nullable: true })
+  phone: string
+
   @Column({ type: 'text' })
   password: string
 

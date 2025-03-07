@@ -18,7 +18,6 @@ export class CreateUsersDto {
 }
 
 export class UpdateUsersDto {
-  @IsNotEmpty()
   id: number
 
   @IsNotEmpty({ message: 'Tên đăng nhập không được để trống !' })
@@ -29,6 +28,14 @@ export class UpdateUsersDto {
   password: string
 
   email: string
+
+  phone: string
+
+  avartar: string
+
+  cookie: string
+
+  token: string
 
   status: number
 }

@@ -1,16 +1,18 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
-import { join } from 'path'
+import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { connectToDb } from './config'
-import { setController } from './modules/controllers'
-import hanldeFileWork from './worker'
+import { registerIPC } from './boot'
 
-function createWindow(): void {
+let mainWindow: BrowserWindow
+const createWindow = (): void => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+  mainWindow = new BrowserWindow({
+    width: 1366,
+    minHeight: 768,
+    minWidth: 1244,
+    height: 768,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -18,6 +20,12 @@ function createWindow(): void {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
+  })
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.setTitle('420-application')
+    mainWindow.maximize()
+    mainWindow.focus()
   })
 
   mainWindow.on('ready-to-show', () => {
@@ -55,11 +63,15 @@ app.whenReady().then(async () => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
 
-  setController()
-  hanldeFileWork()
   await connectToDb()
-
   createWindow()
+  registerIPC()
+
+  // createWaitingWindow()
+  // const intervalId = setInterval(() => {
+  //   clearInterval(intervalId)
+  //   createWindow()
+  // }, 3000)
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

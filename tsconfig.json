@@ -6,6 +6,15 @@
       "emitDecoratorMetadata": true,
       "strictPropertyInitialization": false,
   "strict": true,
+  "baseUrl": ".",
+  "paths": {
+      "@main/*": [
+        "src/main/*"
+      ],
+      "@preload/*": [
+        "src/preload/*"
+      ],
+    },
 
     }
 }

@@ -1,14 +1,14 @@
 import { ipcMain } from 'electron'
-import { ListUsersDto, CreateUsersDto, UpdateUsersDto } from '../DTO/users.dto'
-import { addUser, deleteUser, getListUsers, updateUser } from '../services/users.service'
+import { CreateUsersDto, ListUsersDto, UpdateUsersDto } from '../modules/DTO/users.dto'
+import { addUser, deleteUser, getListUsers, updateUser } from '../modules/services/users.service'
 
-export const UserControllers = () => {
+export const IpcMainAccount = (): void => {
   ipcMain.handle('fetchUsers', async (_, params: ListUsersDto) => {
     const data = await getListUsers(params)
     return data
   })
 
-  ipcMain.handle('addUser', async (_, payload: CreateUsersDto) => {
+  ipcMain.handle('account_create', async (_, payload: CreateUsersDto) => {
     const res = await addUser(payload)
     return res
   })

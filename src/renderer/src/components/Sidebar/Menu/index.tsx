@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import HomePage from '@renderer/pages/home'
 import UsersPage from '@renderer/pages/users'
-import PostsPage from '@renderer/pages/posts'
+import PostPage from '@renderer/pages/posts'
 import PrivateRoute from '@renderer/middleware/navigate'
 import LoginPage from '@renderer/pages/login'
 import WorkerPage from '@renderer/pages/worker'
@@ -14,22 +14,22 @@ const Menu = () => {
           <ul className="hidden md:flex space-x-6">
             <li>
               <Link to="/" className="text-white hover:text-gray-200 px-1">
-                Home
+                Trang Chủ
               </Link>
             </li>
             <li>
               <Link to="/users" className="text-white hover:text-gray-200 px-1">
-                Users
+                Cấu hình tài khoản
               </Link>
             </li>
             <li>
               <Link to="/posts" className="text-white hover:text-gray-200 px-1">
-                Do Some Think
+                Seeding
               </Link>
             </li>
             <li>
               <Link to="/worker" className="text-white hover:text-gray-200 px-1">
-                Worker
+                Crowler
               </Link>
             </li>
           </ul>
@@ -60,7 +60,7 @@ const Menu = () => {
           element={
             <PrivateRoute>
               {' '}
-              <PostsPage></PostsPage>{' '}
+              <PostPage></PostPage>{' '}
             </PrivateRoute>
           }
         ></Route>

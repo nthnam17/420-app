@@ -1,17 +1,20 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
+import { AccountApi } from '@renderer/api/account'
 
 interface user {
   name: string
   username: string
   password: string
   email: string
-  status: number
+  status: boolean
+  phone: string
+  token: string
+  cookie: string
 }
 
 const AddUser = createAsyncThunk('addUser', async (payload: user) => {
-  const { ipcRenderer } = window.electron
   try {
-    const response = await ipcRenderer.invoke('addUser', payload)
+    const response = await AccountApi.create(payload)
 
     if (!response) {
       return

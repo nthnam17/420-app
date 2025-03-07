@@ -1,0 +1,278 @@
+// import { BrowserWindow, session } from 'electron'
+import * as fs from 'fs'
+
+// export const screenLoginX = (): void => {
+//   const win = new BrowserWindow({
+//     width: 600,
+//     height: 800,
+//     webPreferences: {
+//       contextIsolation: false,
+//       nodeIntegration: false,
+//       javascript: true
+//     }
+//   })
+
+//   const userAgent =
+//     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.6834.196 Safari/537.36'
+
+//   win.webContents.setUserAgent(userAgent)
+
+//   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
+//     details.requestHeaders['User-Agent'] =
+//       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+//     delete details.requestHeaders['Electron']
+//     details.requestHeaders['Origin'] = 'https://x.com'
+//     callback({ cancel: false, requestHeaders: details.requestHeaders })
+//   })
+
+//   win.loadURL('https://x.com/')
+
+//   win.webContents.once('did-finish-load', async () => {
+//     win.focus()
+//     const webHandle = win.webContents
+
+//     setTimeout(() => {
+//       webHandle
+//         .executeJavaScript(
+//           `
+//     const loginBtn = document.querySelector('a[href="/login"]')
+//     if (loginBtn) {
+//       loginBtn.click()
+//     }
+
+//     function setNativeValue(element, value) {
+//     const valueSetter = Object.getOwnPropertyDescriptor(element, 'value')?.set;
+//     const prototype = Object.getPrototypeOf(element);
+//     const prototypeValueSetter = Object.getOwnPropertyDescriptor(prototype, 'value')?.set;
+
+//     if (prototypeValueSetter && valueSetter !== prototypeValueSetter) {
+//         prototypeValueSetter.call(element, value);
+//     } else {
+//         valueSetter?.call(element, value);
+//     }
+
+//     element.dispatchEvent(new Event('input', { bubbles: true }));
+//     element.dispatchEvent(new Event('change', { bubbles: true }));
+//     }
+
+//     function waitForElement(selector, callback, timeout = 8000) {
+//         const startTime = Date.now();
+//         const interval = setInterval(() => {
+//             const element = document.querySelector(selector);
+//             if (element) {
+//                 clearInterval(interval);
+//                 callback(element);
+//             } else if (Date.now() - startTime > timeout) {
+//                 clearInterval(interval);
+//                 console.error('Timeout: Không tìm thấy ' + selector);
+//             }
+//         }, 500);
+//     }
+
+//       waitForElement('input[name="text"]', (inputText) => {
+//         inputText.parentNode.click();
+//         setNativeValue(inputText, 'NthnamUtd');
+//     });
+
+//     waitForElement('button:nth-child(4)', (btn) => {
+//         btn.click();
+//     });
+
+//     // waitForElement('input[name="text"]', (inputVerifi) => {
+//     //     setNativeValue(inputVerifi, '0377917901');
+//     // }, 8000);
+
+//     waitForElement('input[name="password"]', (inputPass) => {
+//         setNativeValue(inputPass, 'Nthnam17092001');
+//     }, 10000);
+
+//     waitForElement('button[data-testid="LoginForm_Login_Button"]', (btnLogin) => {
+//         btnLogin.click();
+//     }, 10000);
+//   `
+//         )
+//         // .then((html) => {
+//         //   fs.writeFileSync('index234.html', html, 'utf-8')
+//         //   console.log('index234.html')
+//         // })
+//         .catch((err) => console.error('Lỗi executeJavaScript:', err))
+//       webHandle
+//         .executeJavaScript('navigator.userAgent')
+//         .then((result) => {
+//           console.log('User Agent:', result)
+//         })
+//         .catch((e) => console.error('Lỗi:', e))
+//     }, 3000)
+//   })
+// }
+
+import puppeteer from 'puppeteer'
+
+export const screenLoginX = async (): Promise<void> => {
+  // const browser = await puppeteer.launch({ headless: false })
+  // const page = await browser.newPage()
+
+  // // await page.setViewport({ width: 600, height: 1024 })
+
+  // const pages = await browser.pages()
+
+  // if (pages.length > 1) {
+  //   await pages[0].close()
+  // }
+
+  // // Đặt User-Agent tùy chỉnh
+  // await page.setUserAgent(
+  //   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+  // )
+  // await page.setViewport({ width: 1280, height: 800 })
+  // await page.setExtraHTTPHeaders({
+  //   'Accept-Language': 'en-US,en;q=0.9'
+  // })
+
+  // await page.goto('https://x.com/', { waitUntil: 'domcontentloaded' })
+
+  // const fullHtml = await page.content()
+
+  // fs.writeFileSync('index234.html', fullHtml, 'utf-8')
+  // console.log('index234.html')
+
+  // await page.waitForSelector('a', { visible: true })
+
+  // // const href = await page.$eval('a[href="/login"]', (el) => el.href)
+
+  // const link = await page.evaluate(() => document.querySelectorAll('a'))
+
+  // console.log('login11111', link)
+  // await browser.close();
+
+  const username = 'NthnamUtd'
+  const password = 'Nthnam17092001'
+  const userPhone = '0377917901'
+
+  const browser = await puppeteer.launch({
+    headless: false
+  })
+  /////// Remove page default
+  const pages = await browser.pages()
+
+  if (pages.length > 1) {
+    await pages[0].close()
+  }
+
+  const page = await browser.newPage()
+  await page.goto('https://twitter.com/i/flow/login')
+  await page.waitForNetworkIdle({ idleTime: 1500 })
+  ///////////////////////////////////////////////////////////////////////////////////
+  // Select the user input
+  await page.waitForSelector('[autocomplete=username]')
+  await page.type('input[autocomplete=username]', username, { delay: 50 })
+  // Press the Next button
+  await page.evaluate(() => document.querySelectorAll('button')[2].click())
+  await page.waitForNetworkIdle({ idleTime: 1500 })
+  ///////////////////////////////////////////////////////////////////////////////////
+  // Sometimes twitter suspect suspicious activties, so it ask for your handle/phone Number
+  const extractedText = await page.content()
+  if (extractedText.includes('Enter your phone number or username')) {
+    await page.waitForSelector('[autocomplete=on]')
+    await page.type('input[autocomplete=on]', userPhone, { delay: 50 })
+    await page.evaluate(() => document.querySelectorAll('button')[1].click())
+    await page.waitForNetworkIdle({ idleTime: 1500 })
+  }
+  ///////////////////////////////////////////////////////////////////////////////////
+  // Select the password input
+  await page.waitForSelector('[autocomplete="current-password"]')
+  await page.type('[autocomplete="current-password"]', password, { delay: 50 })
+  // Press the Login button
+  await page.evaluate(() => document.querySelectorAll('button')[3].click())
+  await page.waitForNetworkIdle({ idleTime: 2000 })
+
+  // Either close the browser and kill the fun, OR make a baby bot to tweet instead of you
+  await browser.close()
+}
+
+
+const Icookies = [
+    {
+      name: 'ct0',
+      value:
+        'f71ae3e60a75c6309200c85225d7af78a66ef7fc80ab0f53137777d6f35717e50941f48b59083942a2d8ca9fac79c427ca8b0698ed380af0af94fb48607a001c1c61bf4169c13ddf6374a73fcf97580e',
+      domain: '.x.com',
+      path: '/',
+      expires: 1775655357.935068,
+      size: 163,
+      httpOnly: false,
+      secure: true,
+      session: false
+    },
+    {
+      name: 'auth_token',
+      value: '95cf8b0cff3fcd499b6e1fd8422fd671e4b6015e',
+      domain: '.x.com',
+      path: '/',
+      expires: 1775655357.62032,
+      size: 50,
+      httpOnly: true,
+      secure: true,
+      session: false
+    }
+  ]
+
+
+
+
+import { TPayloadLoginModule } from '@main/types'
+import { MktBrowser } from '@vitechgroup/mkt-browser'
+export const login = async (
+  browserMkt: MktBrowser,
+  userData: TPayloadLoginModule
+): Promise<void> => {
+  const browser = await browserMkt.browser
+
+  const page = await browser.pages()[0]
+  // c
+
+  // Navigate to a page where login is required
+  await page.goto('https://x.com')
+
+  await page.waitForNetworkIdle({ idleTime: 3000 })
+
+  const linkLogin = await page.evaluate(() => {
+    let result = false
+    const tagA = document.querySelectorAll('a')[4]
+    const href = tagA.href
+    if (tagA && href.includes('/login')) {
+      tagA.click()
+      result = true
+    }
+
+    return result
+  })
+
+  if (linkLogin) {
+    await page.waitForNetworkIdle({ idleTime: 3000 })
+    ///////////////////////////////////////////////////////////////////////////////////
+    // Select the user input
+    await page.waitForSelector('[autocomplete=username]')
+    await page.type('input[autocomplete=username]', userData.uid, { delay: 50 })
+    // Press the Next button
+    await page.evaluate(() => document.querySelectorAll('button')[2].click())
+    await page.waitForNetworkIdle({ idleTime: 1500 })
+    ///////////////////////////////////////////////////////////////////////////////////
+    // Sometimes twitter suspect suspicious activties, so it ask for your handle/phone Number
+    const extractedText = await page.content()
+    if (extractedText.includes('Enter your phone number or email address')) {
+      await page.waitForSelector('[autocomplete=on]')
+      await page.type('input[autocomplete=on]', userData.phone, { delay: 50 })
+      await page.evaluate(() => document.querySelectorAll('button')[1].click())
+      await page.waitForNetworkIdle({ idleTime: 1500 })
+    }
+    ///////////////////////////////////////////////////////////////////////////////////
+    // Select the password input
+    await page.waitForSelector('[autocomplete="current-password"]')
+    await page.type('[autocomplete="current-password"]', userData.password, { delay: 50 })
+    // Press the Login button
+    await page.evaluate(() => document.querySelectorAll('button')[3].click())
+    await page.waitForNetworkIdle({ idleTime: 2000 })
+  }
+  // await browser.close()
+}

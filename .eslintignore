@@ -1,0 +1,7 @@
+node_modules
+dist
+libs
+out
+.gitignore
+src/renderer/src/*/**.tsx
+src/renderer/src/pages/*.tsx

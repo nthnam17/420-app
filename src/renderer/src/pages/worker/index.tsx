@@ -6,8 +6,8 @@ const WorkerPage = () => {
   const [filePath, setFilePath] = useState<string | null>(null)
   const [result, setResult] = useState<string>('')
 
-  const selectFile = async () => {
-    const path = await ipcRenderer.invoke('select-file')
+  const selectFile = async (): Promise<void> => {
+    const path = await ipcRenderer.invoke('start_job')
     if (path) {
       setFilePath(path)
       setResult('')

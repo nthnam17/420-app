@@ -1,10 +1,17 @@
-import { resolve } from 'path'
-import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
+import { resolve } from 'node:path'
+import { defineConfig } from 'electron-vite'
 import react from '@vitejs/plugin-react'
+import { externalizeDepsPlugin } from 'electron-vite'
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
+    resolve: {
+      alias: {
+        '@main': resolve('src/main'),
+        '@preload': resolve('src/preload')
+      }
+    }
   },
   preload: {
     plugins: [externalizeDepsPlugin()]
@@ -15,6 +22,12 @@ export default defineConfig({
         '@renderer': resolve('src/renderer/src')
       }
     },
-    plugins: [react()]
+    plugins: [react()],
+    build: {
+      target: 'node18',
+      rollupOptions: {
+        external: ['worker_threads']
+      }
+    }
   }
 })
