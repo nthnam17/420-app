@@ -1,6 +1,7 @@
 import { Users } from '../entities/users.entity'
 import { CreateUsersDto, ListUsersDto, UpdateUsersDto } from '../DTO/users.dto'
 import { dataSource } from '../../config'
+import { log } from 'console'
 
 const usersRepository = dataSource.getRepository(Users)
 
@@ -20,6 +21,20 @@ export const getListUsers = async (params: ListUsersDto) => {
   } catch (error) {
     console.log(error)
     return null
+  }
+}
+
+export const getOneUser = async (id: number) => {
+  try {
+    const data = usersRepository.findOne({ where: { id } })
+
+    if (!data) {
+      console.log('Không tin thấy bản ghi')
+    }
+
+    return data
+  } catch (e) {
+    console.log(`Error query : ${e}`)
   }
 }
 

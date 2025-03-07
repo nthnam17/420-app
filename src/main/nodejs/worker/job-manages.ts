@@ -14,17 +14,27 @@ export class JobManagers {
 
     await page.waitForNetworkIdle({ idleTime: 3000 })
 
-    await this.initModule(page, 'seeding', userData)
+    const moduleSeeding = await this.initModule(userData, page, 'seeding')
+
+    if (!moduleSeeding) {
+      console.error('lỗi module')
+    }
   }
 
-  private async initModule(page: Page, type: string, userData: Users): Promise<void> {
-    await login(page, userData)
+  private async initModule(account: Users, page: Page, type: string): Promise<boolean> {
+    try {
+      console.log(`[Khởi tạo module thành công`)
+      await login(page, account)
 
-    switch (type) {
-      case 'seeding':
-        return await Seeding(page)
-      default:
-        return console.log('defaul case')
+      switch (type) {
+        case 'seeding':
+          await Seeding(page)
+      }
+
+      return true
+    } catch (error) {
+      console.error(`[Lỗi khởi tạo module]:  ${error}`)
+      return false
     }
   }
 }

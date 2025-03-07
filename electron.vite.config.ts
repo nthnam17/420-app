@@ -11,6 +11,9 @@ export default defineConfig({
         '@main': resolve('src/main'),
         '@preload': resolve('src/preload')
       }
+    },
+    worker: {
+      format: 'es'
     }
   },
   preload: {

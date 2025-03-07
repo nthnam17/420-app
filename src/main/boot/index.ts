@@ -1,6 +1,5 @@
 import { IpcMainAccount, IpcMainActions } from '../ipc'
-import { Worker } from 'node:worker_threads'
-import workerPath from '@main/nodejs/worker/index?modulePath'
+import createWorkerNode from '@main/nodejs/worker/index?nodeWorker'
 import { IWorkerData } from '../nodejs/types/worker'
 
 export const registerIPC = (): void => {
@@ -9,8 +8,9 @@ export const registerIPC = (): void => {
 }
 
 export const createWorker = (type: string, workerData: IWorkerData): void => {
-  const workerOptions = { workerData: workerData }
-  const worker = new Worker(workerPath, workerOptions)
+  const worker = createWorkerNode({
+    workerData: { workerData }
+  })
   worker.on('message', (message) => {
     console.log(`Worker Message: ${message}`)
   })
@@ -22,4 +22,6 @@ export const createWorker = (type: string, workerData: IWorkerData): void => {
   worker.on('exit', (code) => {
     console.log(`Worker exited with code ${code}`)
   })
+
+  worker.postMessage('Hello from main thread!')
 }

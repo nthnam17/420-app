@@ -12,7 +12,7 @@ export const login = async (page: Page, userData: Users): Promise<void> => {
     await page.waitForSelector('[autocomplete=username]')
     await page.type('input[autocomplete=username]', userData.username, { delay: 50 })
     // Press the Next button
-    const nextBtn = await page.$$('[button]')
+    const nextBtn = await page.$$('button')
     if (nextBtn && nextBtn.length >= 3) nextBtn[2].click()
     await page.waitForNetworkIdle({ idleTime: 1500 })
     ///////////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@ export const login = async (page: Page, userData: Users): Promise<void> => {
     if (extractedText.includes('Enter your phone number or email address')) {
       await page.waitForSelector('[autocomplete=on]')
       await page.type('input[autocomplete=on]', userData.email ?? '', { delay: 50 })
-      const btnVerifi = await page.$$('[button]')
+      const btnVerifi = await page.$$('button')
       if (btnVerifi && btnVerifi.length >= 2) btnVerifi[1].click()
       await page.waitForNetworkIdle({ idleTime: 1500 })
     }
@@ -31,5 +31,9 @@ export const login = async (page: Page, userData: Users): Promise<void> => {
     await page.type('[autocomplete="current-password"]', userData.password ?? '123456', {
       delay: 50
     })
+
+    const loginBtn = await page.$$('button')
+    if (loginBtn && loginBtn.length >= 4) loginBtn[3].click()
+    await page.waitForNetworkIdle({ idleTime: 2000 })
   }
 }
