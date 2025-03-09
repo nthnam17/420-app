@@ -1,35 +1,52 @@
-import puppeteer, { Page } from 'puppeteer'
+import puppeteer, { Browser, Page } from 'puppeteer'
 // import { logger } from '../helper/logger'
-// import { parentPort, workerData } from 'node:worker_threads'
+import { MessagePort, workerData } from 'worker_threads'
 import { Users } from '../../modules/entities/users.entity'
 import { login } from '../actions/auth'
 import { Seeding } from '../actions/seeding'
+import { sendMessageToMain } from '../helper/job'
+import { IKeyMessageWorker } from '../types/worker'
+import { seedingProfile } from '../actions/seeding-profile'
+// import { IPreixActions } from '../types/worker'
 
 export class JobManagers {
-  public async seeding(userData: Users): Promise<void> {
+  private parentPort: MessagePort
+
+  constructor(parentPort: MessagePort) {
+    this.parentPort = parentPort
+  }
+  public async start(userData: Users, type: IKeyMessageWorker): Promise<void> {
     const browser = await puppeteer.launch({ headless: false })
-    const page = await browser.newPage()
 
-    await page.goto('https://x.com', { waitUntil: 'networkidle2' })
+    const module = await this.initModule(userData, browser, type)
 
-    await page.waitForNetworkIdle({ idleTime: 3000 })
-
-    const moduleSeeding = await this.initModule(userData, page, 'seeding')
-
-    if (!moduleSeeding) {
+    if (!module) {
       console.error('lỗi module')
     }
   }
 
-  private async initModule(account: Users, page: Page, type: string): Promise<boolean> {
+  private async initModule(
+    account: Users,
+    browser: Browser,
+    type: IKeyMessageWorker
+  ): Promise<boolean> {
     try {
       console.log(`[Khởi tạo module thành công`)
-      await login(page, account)
+      const { dataUserUpdate, page } = await login(browser, account)
 
       switch (type) {
         case 'seeding':
           await Seeding(page)
+          break
+        case 'seeding_profile':
+          await seedingProfile(page)
+          await Seeding(page)
+          break
       }
+
+      sendMessageToMain(this.parentPort, { key: 'job_action_finally', data: dataUserUpdate })
+
+      browser.close()
 
       return true
     } catch (error) {

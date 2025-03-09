@@ -1,7 +1,8 @@
 // import { ipcRenderer } from "electron/renderer";
 // import { useState } from "react";
 
-import startJob from "@renderer/redux/actions/jobActions/startJobActions"
+import seeding from "@renderer/redux/actions/jobActions/seedingActions"
+import seedingProfile from "@renderer/redux/actions/jobActions/seedingProfileActions"
 import { AppDispatch } from "@renderer/redux/store/store"
 import { useDispatch } from "react-redux"
 
@@ -9,7 +10,11 @@ const PostPage = () => {
   const useAppDispatch = useDispatch<AppDispatch>()
 
   const seeding_actions = async (): Promise<void> => {
-    useAppDispatch(startJob())
+    useAppDispatch(seeding())
+  }
+
+  const seeding_profile_actions = async (): Promise<void> => {
+    useAppDispatch(seedingProfile())
   }
 
   return (

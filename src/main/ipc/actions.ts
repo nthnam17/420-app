@@ -1,14 +1,21 @@
 import { ipcMain } from 'electron'
-import { createWorker } from '../boot'
-import { JobManagers } from '../nodejs/worker/job-manages'
 import { getOneUser } from '../modules/services/users.service'
+import { createWorker } from '../nodejs/helper/job'
 
 export const IpcMainActions = (): void => {
-  ipcMain.handle('action_start', async (_, type, payload) => {
+  ipcMain.handle('action_seeding', async (_, type, payload) => {
     const lstUser = await getOneUser(1)
     if (!lstUser) {
       return
     }
-    createWorker(lstUser)
+    createWorker(lstUser, 'seeding')
+  })
+
+  ipcMain.handle('action_seeding_profile', async (_, type, payload) => {
+    const lstUser = await getOneUser(1)
+    if (!lstUser) {
+      return
+    }
+    createWorker(lstUser, 'seeding_profile')
   })
 }

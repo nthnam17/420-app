@@ -1,30 +1,17 @@
-import { parentPort, workerData } from 'worker_threads'
-import puppeteer from 'puppeteer'
-import { getOneUser } from '../../modules/services/users.service'
+import { parentPort } from 'worker_threads'
 import { JobManagers } from './job-manages'
 import { Users } from '../../modules/entities/users.entity'
-
-// export const run = async () => {
-//   const browser = await puppeteer.launch({ headless: false })
-//   const page = await browser.newPage()
-//   await page.goto(workerData.url)
-
-//   const title = await page.title()
-//   await browser.close()
-
-//   return title
-// }
+import { IKeyMessageWorker, IResultMessageWorker } from '../types/worker'
 
 if (parentPort) {
-  parentPort.on('message', async (lstUser: Users) => {
-    // const result = await run()
-
-    if (!lstUser) {
-      console.log('Không có dữ liệu')
+  parentPort.on('message', async (data: IResultMessageWorker<any>) => {
+    if (!data?.data) {
+      console.log('Không có dữ liệu tài khoản')
       return
     }
-    new JobManagers().seeding(lstUser)
     if (parentPort) {
+      new JobManagers(parentPort).start(data?.data, data?.key)
+
       parentPort.postMessage('Thành công !!!')
     }
   })

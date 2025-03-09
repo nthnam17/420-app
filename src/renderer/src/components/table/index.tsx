@@ -41,7 +41,7 @@ const TableComponent: React.FC<TableProps> = ({ columns, data, onDelete, onUpdat
                     <span className="text-black">{row?.email}</span>
                   </td>
                   <td className="py-3 px-6 text-black">
-                    <span className="text-black">{row.status == 0 ? 'nam' : 'nữ'}</span>
+                    <span className="text-black">{row.status == 0 ? 'live' : 'die'}</span>
                   </td>
                   <td className="py-3 px-6 text-black">
                     <span className="text-blue-500" onClick={() => onUpdate(row?.id)}>

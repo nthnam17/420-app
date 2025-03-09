@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { ActionApi } from '@renderer/api/actions'
 
-const startJob = createAsyncThunk('startJob', async () => {
+const seeding = createAsyncThunk('seeding', async () => {
   try {
-    const response = await ActionApi.start('')
+    const response = await ActionApi.seeding('')
 
     if (!response) {
       return
@@ -16,4 +16,4 @@ const startJob = createAsyncThunk('startJob', async () => {
   }
 })
 
-export default startJob
+export default seeding

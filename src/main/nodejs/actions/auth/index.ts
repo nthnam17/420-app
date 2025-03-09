@@ -1,12 +1,52 @@
-import { Page } from 'puppeteer'
+import { Browser, Page } from 'puppeteer'
 import { Users } from '../../../modules/entities/users.entity'
 
-export const login = async (page: Page, userData: Users): Promise<void> => {
-  const linkLogin = await page.waitForSelector('[data-testid="loginButton"]')
+export const login = async (browser: Browser, userData: Users): Promise<any> => {
+  const cookiesConfig = [
+    {
+      name: 'ct0',
+      value: userData.cookie ?? '',
+      domain: '.x.com',
+      path: '/',
+      expires: 1775655357.935068,
+      size: 163,
+      httpOnly: false,
+      secure: true,
+      session: false
+    },
+    {
+      name: 'auth_token',
+      value: userData.token ?? '',
+      domain: '.x.com',
+      path: '/',
+      expires: 1775655357.62032,
+      size: 50,
+      httpOnly: true,
+      secure: true,
+      session: false
+    }
+  ]
 
-  if (linkLogin) {
-    linkLogin.click()
-    await page.waitForNetworkIdle({ idleTime: 3000 })
+  const page = await browser.newPage()
+
+  // Set cookies for the page session
+  await page.setCookie(...cookiesConfig)
+
+  await page.goto('https://x.com')
+
+  const pages = await browser.pages()
+
+  if (pages && pages.length > 1) pages[0].close()
+
+  await page.waitForNetworkIdle({ idleTime: 2000 })
+
+  console.log(userData, 'userData')
+
+  const linkLogin = await page.$$('a')
+
+  if (linkLogin && linkLogin.length >= 4) {
+    linkLogin[4].click()
+    await page.waitForNetworkIdle({ idleTime: 2000 })
     ///////////////////////////////////////////////////////////////////////////////////`
     // Select the user input
     await page.waitForSelector('[autocomplete=username]')
@@ -34,6 +74,18 @@ export const login = async (page: Page, userData: Users): Promise<void> => {
 
     const loginBtn = await page.$$('button')
     if (loginBtn && loginBtn.length >= 4) loginBtn[3].click()
-    await page.waitForNetworkIdle({ idleTime: 2000 })
+
+    await page.waitForNetworkIdle({ idleTime: 1000 })
+
+    // const cookies = await page.cookies()
+
+    // const token = cookies.find((cookie) => cookie.name === 'auth_token')?.value
+
+    // const cookie = cookies.find((cookie) => cookie.name === 'ct0')?.value
+
+    // userData.token = token ?? ''
+    // userData.cookie = cookie ?? ''
+
+    return { userData, page }
   }
 }

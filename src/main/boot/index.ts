@@ -1,7 +1,4 @@
-import { workerData } from 'node:worker_threads'
 import { IpcMainAccount, IpcMainActions } from '../ipc'
-import createWorkerNode from '@main/nodejs/worker/index?nodeWorker'
-import { Users } from '../modules/entities/users.entity'
 // import { IWorkerData } from '../nodejs/types/worker'
 
 export const registerIPC = (): void => {
@@ -27,15 +24,3 @@ export const registerIPC = (): void => {
 
 //   worker.postMessage('Hello from main thread!')
 // }
-
-export const createWorker = (data: Users) => {
-  const worker = createWorkerNode({
-    workerData: { data: data }
-  })
-
-  worker.on('message', (message) => {
-    console.log('Title from worker:', message)
-  })
-
-  worker.postMessage('start')
-}

@@ -37,6 +37,9 @@ export type ActionArgRoutes = {
   start: { ret: boolean }
   stop: { args: IPayloadStartAction; ret: boolean }
   await: { args: IPayloadStartAction; ret: boolean }
+  seeding: { ret: boolean }
+  seeding_profile: { ret: boolean }
+  tiojd: { ret: boolean }
 }
 
 export type EventKey = keyof PreloadEventMap

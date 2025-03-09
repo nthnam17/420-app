@@ -52,6 +52,8 @@ export interface IPayloadCreateAcc {
 
 export type ActionArgRoutes = {
   start: { ret: boolean }
+  seeding: { ret: boolean }
+  seeding_profile: { ret: boolean }
   stop: { args: IPayloadStartAction; ret: boolean }
   await: { args: IPayloadStartAction; ret: boolean }
 }

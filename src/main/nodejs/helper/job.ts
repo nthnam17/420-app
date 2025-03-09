@@ -1,16 +1,46 @@
-import path from 'path'
-import { Worker } from 'worker_threads'
+import { IKeyMessageWorker, IResultMessageWorker } from '../types/worker'
+import { MessagePort, Worker } from 'node:worker_threads'
+import createWorkerNode from '@main/nodejs/worker/index?nodeWorker'
+import { Users } from '../../modules/entities/users.entity'
+import { updateUser } from '../../modules/services/users.service'
+import { UpdateUsersDto } from '../../modules/DTO/users.dto'
 
-export const initializeWorker = (workerData: number): Worker => {
-  const worker = new Worker(require.resolve(path.resolve('./src/main/nodejs/worker/index.ts')), {
-    workerData: workerData
+export const createWorker = (data: Users, type: IKeyMessageWorker) => {
+  const worker = createWorkerNode({
+    workerData: { data: data, type: type }
   })
 
-  console.log('job init')
+  worker.on('message', (message) => handleWorkerMessage(worker, message))
 
-  worker.on('message', (msg) => console.log(`Worker ${msg.id}:`, msg.status))
-  worker.on('error', (err) => console.error(`Worker error:`, err))
-  worker.on('exit', (code) => console.log(`Worker exited with code ${code}`))
+  worker.on('error', (err) => {
+    console.error(`Worker Error: ${err.message}`)
+  })
 
-  return worker
+  worker.on('exit', (code) => {
+    console.log(`Worker exited with code ${code}`)
+  })
+
+  sendMessageToWorker(worker, { data: data, key: type })
+}
+
+export const sendMessageToWorker = <T>(worker: Worker, payload: IResultMessageWorker<T>): void =>
+  worker.postMessage(payload)
+
+export const sendMessageToMain = <T>(
+  parentPort: MessagePort,
+  payload: IResultMessageWorker<T>
+): void => parentPort.postMessage(payload)
+
+const handleWorkerMessage = async (
+  worker: Worker,
+  { key, data }: IResultMessageWorker<unknown>
+): Promise<void> => {
+  switch (key) {
+    case 'job_action_finally': {
+      console.log(data, 'data_user_update')
+      // await updateUser(data as UpdateUsersDto)
+      worker.terminate()
+      break
+    }
+  }
 }

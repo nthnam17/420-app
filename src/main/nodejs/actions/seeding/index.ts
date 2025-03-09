@@ -1,32 +1,41 @@
 import { Page } from 'puppeteer'
 
 export const Seeding = async (page: Page): Promise<void> => {
-  for (let i = 0; i < 5000; i++) {
-    const tweets = await page.$$('[data-testid="like"]')
-    if (tweets && tweets.length > 1 && tweets.length > i) {
-      await page.waitForNetworkIdle({ idleTime: 3000 })
-      tweets[i].click()
-      const cmtBtn = await page.$$('[data-testid="reply"]')
+  // for (let i = 0; i < 5000; i + 1) {
+  await page.mouse.wheel({ deltaY: 800 })
+  await page.waitForNetworkIdle({ idleTime: 500 })
 
-      if (cmtBtn.length > 1) {
-        cmtBtn[0].click()
+  const tweets = await page.$$('[data-testid="like"]')
+  const cmtBtn = await page.$$('[data-testid="reply"]')
 
-        await page.waitForSelector('[data-testid="tweetTextarea_0"]')
-        await page.type(
-          'div[data-testid="tweetTextarea_0"]',
-          " It's really awesome, you have real quality",
-          {
-            delay: 150
-          }
-        )
+  console.log(tweets, 'tweets')
+  console.log(cmtBtn, 'cmtBtn')
 
-        const tweetBtn = await page.waitForSelector('[data-testid="tweetButton"]')
-        await page.waitForNetworkIdle({ idleTime: 1000 })
-        tweetBtn?.click()
-      }
-    }
+  if (tweets && tweets.length > 1) {
+    await page.waitForNetworkIdle({ idleTime: 2000 })
+    tweets[0].click()
+  }
+  if (cmtBtn && cmtBtn.length > 1) {
+    cmtBtn[0].click()
+    await page.waitForNetworkIdle({ idleTime: 2000 })
 
-    await page.mouse.wheel({ deltaY: 800 })
-    await page.waitForNetworkIdle({ idleTime: 150 })
+    await page.waitForSelector('[data-testid="tweetTextarea_0"]')
+    await page.type('div[data-testid="tweetTextarea_0"]', ' wow, wow', {
+      delay: 100
+    })
+    await page.waitForNetworkIdle({ idleTime: 500 })
+
+    const tweetBtn = await page.waitForSelector('[data-testid="tweetButton"]')
+    await page.waitForNetworkIdle({ idleTime: 1000 })
+    tweetBtn?.click()
+  }
+
+  // Retweet
+  const retweetBtn = await page.$$('[data-testid="retweet"]')
+  if (retweetBtn && retweetBtn.length > 1) {
+    retweetBtn[0].click()
+    const retweetConfirmBtn = await page.waitForSelector('[data-testid="retweetConfirm"]')
+    if (retweetConfirmBtn) retweetConfirmBtn.click()
   }
 }
+// }
