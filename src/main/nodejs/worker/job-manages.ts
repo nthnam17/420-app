@@ -7,6 +7,7 @@ import { Seeding } from '../actions/seeding'
 import { sendMessageToMain } from '../helper/job'
 import { IKeyMessageWorker } from '../types/worker'
 import { seedingProfile } from '../actions/seeding-profile'
+import { crawler } from '../actions/crawler'
 // import { IPreixActions } from '../types/worker'
 
 export class JobManagers {
@@ -16,7 +17,7 @@ export class JobManagers {
     this.parentPort = parentPort
   }
   public async start(userData: Users, type: IKeyMessageWorker): Promise<void> {
-    const browser = await puppeteer.launch({ headless: false })
+    const browser = await puppeteer.launch({ headless: false, devtools: true })
 
     const module = await this.initModule(userData, browser, type)
 
@@ -42,11 +43,15 @@ export class JobManagers {
           await seedingProfile(page)
           await Seeding(page)
           break
+
+        case 'crawler':
+          await crawler(page)
+          break
       }
 
-      sendMessageToMain(this.parentPort, { key: 'job_action_finally', data: dataUserUpdate })
+      // sendMessageToMain(this.parentPort, { key: 'job_action_finally', data: dataUserUpdate })
 
-      browser.close()
+      // browser.close()
 
       return true
     } catch (error) {

@@ -18,4 +18,12 @@ export const IpcMainActions = (): void => {
     }
     createWorker(lstUser, 'seeding_profile')
   })
+
+  ipcMain.handle('action_crawler', async (_, type, payload) => {
+    const lstUser = await getOneUser(1)
+    if (!lstUser) {
+      return
+    }
+    createWorker(lstUser, 'crawler')
+  })
 }

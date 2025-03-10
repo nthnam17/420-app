@@ -8,6 +8,7 @@ export type IKeyMessageWorker =
   | 'close_all_chrome'
   | 'job_action_finally'
   | 'seeding_profile'
+  | 'crawler'
 
 export interface IResultMessageWorker<T> {
   key: IKeyMessageWorker

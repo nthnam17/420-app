@@ -39,7 +39,7 @@ export type ActionArgRoutes = {
   await: { args: IPayloadStartAction; ret: boolean }
   seeding: { ret: boolean }
   seeding_profile: { ret: boolean }
-  tiojd: { ret: boolean }
+  crawler: { ret: boolean }
 }
 
 export type EventKey = keyof PreloadEventMap

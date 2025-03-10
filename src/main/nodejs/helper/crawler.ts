@@ -1,26 +1,33 @@
-function decodeToJson(encodedStr) {
-  // Giải mã chuỗi URL
+import { Page } from 'puppeteer'
+
+export const decodeToJson = (encodedStr): JSON => {
   const decodedStr = decodeURIComponent(encodedStr)
-
-  // Chuyển đổi chuỗi JSON thành đối tượng JavaScript
-  return JSON.parse(decodedStr)
+  const array = JSON.parse(decodedStr)
+  return array
 }
 
-function encodeToJson(obj) {
-  // Chuyển đổi đối tượng JavaScript thành chuỗi JSON
+export const encodeToJson = (obj): string => {
   const jsonStr = JSON.stringify(obj)
+  const url = encodeURIComponent(jsonStr)
 
-  // Mã hóa chuỗi JSON thành URL mã hóa
-  return encodeURIComponent(jsonStr)
+  return url
 }
 
-const jsonObj = {
-  rawQuery: 'manchester',
-  count: 20,
-  querySource: 'typed_query',
-  product: 'Top'
+type EvaluateReturnType<T = unknown> = () => T
+
+export async function evaluate<T>(page: Page, fn: string): Promise<Awaited<T>> {
+  return page.evaluate<[], EvaluateReturnType<T>>(`(${fn.toString()})()`)
 }
 
-const encodedStrBack = encodeToJson(jsonObj)
+export function evaluateWithParams<T>(
+  page: Page,
+  fn: (...args: any[]) => any,
+  params: unknown[]
+): Promise<Awaited<T>> {
+  const paramsAsString = params.map((val) => JSON.stringify(val)).join()
+  return page.evaluate<[], EvaluateReturnType<T>>(`(${fn.toString()})(${paramsAsString})`)
+}
 
-console.log(encodedStrBack)
+//example
+// await evaluate(page, 'async function getData(){ return .... }')      // Không cần truyền tham số
+// await evaluateWithParams<T>(page, 'async function getData(payload1, payload2){ return .... }', [payload1, payload2]) // cần truyền tham số

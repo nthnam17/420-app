@@ -1,3 +1,4 @@
+import crawler from '@renderer/redux/actions/jobActions/crawlerActions'
 import seeding from '@renderer/redux/actions/jobActions/seedingActions'
 import seedingProfile from '@renderer/redux/actions/jobActions/seedingProfileActions'
 import { AppDispatch } from '@renderer/redux/store/store'
@@ -14,6 +15,10 @@ const HomePage = () => {
     useAppDispatch(seedingProfile())
   }
 
+  const crawlerActions = async (): Promise<void> => {
+    useAppDispatch(crawler())
+  }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 w-screen h-screen">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96 w-[700px]">
@@ -26,7 +31,7 @@ const HomePage = () => {
           <button onClick={seedingProfileActions} className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
             Seeding Profile
           </button>
-          <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
+          <button onClick={crawlerActions} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
             Crawler Tweets
           </button>
         </div>
