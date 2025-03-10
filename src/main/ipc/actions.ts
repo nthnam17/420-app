@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { getOneUser } from '../modules/services/users.service'
+import { getOneUser } from '../modules/model/users.models'
 import { createWorker } from '../nodejs/helper/job'
 
 export const IpcMainActions = (): void => {

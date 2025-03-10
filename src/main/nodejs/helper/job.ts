@@ -2,8 +2,6 @@ import { IKeyMessageWorker, IResultMessageWorker } from '../types/worker'
 import { MessagePort, Worker } from 'node:worker_threads'
 import createWorkerNode from '@main/nodejs/worker/index?nodeWorker'
 import { Users } from '../../modules/entities/users.entity'
-import { updateUser } from '../../modules/services/users.service'
-import { UpdateUsersDto } from '../../modules/DTO/users.dto'
 
 export const createWorker = (data: Users, type: IKeyMessageWorker) => {
   const worker = createWorkerNode({
@@ -37,8 +35,6 @@ const handleWorkerMessage = async (
 ): Promise<void> => {
   switch (key) {
     case 'job_action_finally': {
-      console.log(data, 'data_user_update')
-      // await updateUser(data as UpdateUsersDto)
       worker.terminate()
       break
     }

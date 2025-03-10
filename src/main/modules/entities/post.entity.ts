@@ -11,6 +11,6 @@ export class Post {
   @Column({ type: 'text' })
   descripton: string
 
-  @Column({ type: 'text' })
-  created_by: string
+  @Column({ type: 'int' })
+  created_by: number
 }

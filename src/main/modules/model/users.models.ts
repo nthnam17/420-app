@@ -1,11 +1,9 @@
 import { Users } from '../entities/users.entity'
-import { CreateUsersDto, ListUsersDto, UpdateUsersDto } from '../DTO/users.dto'
 import { dataSource } from '../../config'
-import { log } from 'console'
 
 const usersRepository = dataSource.getRepository(Users)
 
-export const getListUsers = async (params: ListUsersDto) => {
+export const getListUsers = async (params: any) => {
   try {
     const queryBuilder = usersRepository.createQueryBuilder('users')
 
@@ -38,7 +36,7 @@ export const getOneUser = async (id: number) => {
   }
 }
 
-export const addUser = async (payload: CreateUsersDto) => {
+export const addUser = async (payload: Users) => {
   try {
     const newUser = new Users()
     newUser.email = payload.email
@@ -56,7 +54,7 @@ export const addUser = async (payload: CreateUsersDto) => {
   }
 }
 
-export const updateUser = async (payload: UpdateUsersDto) => {
+export const updateUser = async (payload: Users) => {
   try {
     const data = await usersRepository.update(payload.id, payload)
 
