@@ -7,5 +7,6 @@ export const IpcRendererActions: IIpcCustomRenderer<ActionArgRoutes> = {
   seeding_profile: async () => ipcRendererInvoke('action_seeding_profile', ''),
   stop: async (payload) => ipcRendererInvoke('action_stop', payload),
   await: async (payload) => ipcRendererInvoke('action_await', payload),
-  crawler: async () => ipcRendererInvoke('action_crawler', '')
+  crawler: async () => ipcRendererInvoke('action_crawler', ''),
+  createTweet: async () => ipcRendererInvoke('action_createTweet', '')
 }

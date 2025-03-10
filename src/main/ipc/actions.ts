@@ -26,4 +26,12 @@ export const IpcMainActions = (): void => {
     }
     createWorker(lstUser, 'crawler')
   })
+
+  ipcMain.handle('action_createTweet', async (_, type, payload) => {
+    const lstUser = await getOneUser(1)
+    if (!lstUser) {
+      return
+    }
+    createWorker(lstUser, 'post_tweet')
+  })
 }

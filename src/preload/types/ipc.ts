@@ -57,6 +57,7 @@ export type ActionArgRoutes = {
   stop: { args: IPayloadStartAction; ret: boolean }
   await: { args: IPayloadStartAction; ret: boolean }
   crawler: { ret: boolean }
+  createTweet: { ret: boolean }
 }
 
 export type EventKey = keyof PreloadEventMap

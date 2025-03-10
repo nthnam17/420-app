@@ -9,6 +9,7 @@ export type IKeyMessageWorker =
   | 'job_action_finally'
   | 'seeding_profile'
   | 'crawler'
+  | 'post_tweet'
 
 export interface IResultMessageWorker<T> {
   key: IKeyMessageWorker

@@ -27,6 +27,7 @@
     "@tailwindcss/postcss": "^4.0.8",
     "@tailwindcss/vite": "^4.0.8",
     "antd": "^5.24.2",
+    "axios": "^1.8.2",
     "class-validator": "^0.14.1",
     "electron-updater": "^6.3.9",
     "playwright": "^1.50.1",

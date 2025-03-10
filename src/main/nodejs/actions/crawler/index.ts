@@ -10,21 +10,6 @@ export const crawler = async (page: Page): Promise<void> => {
   //   rawQuery: 'mu utd'
   // }
 
-  // // Chặn và lấy token từ request
-  // page.on('request', async (request) => {
-  //   const url = request.url()
-  //   if (url.includes('https://x.com/i/api/graphql/')) {
-  //     console.log('[Request URL]:', url)
-
-  //     const headers = request.headers()
-  //     if (headers.authorization) {
-  //       console.log('🔑 Access Token:', headers.authorization)
-  //     }
-
-  //     console.log('Request Body:', request.postData()) // Xem dữ liệu gửi lên API
-  //   }
-  // })
-
   // Lấy nội dung response của request
   page.on('response', async (response) => {
     const url = response.url()
@@ -71,10 +56,6 @@ export const crawler = async (page: Page): Promise<void> => {
       }
     }
   })
-  // const encodeQuery = encodeToJson(query)
-  // const encodeFeat = encodeToJson(defaultFeatures)
-  // console.log(encodeQuery)
-  // console.log(encodeFeat)
 
   // const data = await evaluateWithParams(
   //   page,

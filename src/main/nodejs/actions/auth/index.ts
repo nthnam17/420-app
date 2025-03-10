@@ -5,7 +5,9 @@ export const login = async (browser: Browser, userData: Users): Promise<any> => 
   const cookiesConfig = [
     {
       name: 'ct0',
-      value: userData.cookie ?? '',
+      value:
+        userData.cookie ??
+        'e0bfc636189736b5c80337e96aba313a5073b3c40f3c32fe54a83c930965f1aee7617006abf7a1185f06604091080c376f48ed56f2ef69f7207e5a2a45d243238842023ee19554ab9d6e78e4f87cb1f2',
       domain: '.x.com',
       path: '/',
       expires: 1775655357.935068,
@@ -16,7 +18,7 @@ export const login = async (browser: Browser, userData: Users): Promise<any> => 
     },
     {
       name: 'auth_token',
-      value: userData.token ?? '',
+      value: userData.token ?? '4b5b9d9f1b8020b613a8aa397c5a2a1b0a09f39f',
       domain: '.x.com',
       path: '/',
       expires: 1775655357.62032,
