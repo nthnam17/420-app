@@ -1,51 +1,25 @@
 import { Page } from 'puppeteer'
 import { encodeToJson, evaluateWithParams } from '../../helper/crawler'
 import { defaultFeatures, Features, queryId, varQuery } from './config'
-import { handleXMigration } from '../../helper/utils'
-import { defaultHeaders } from './config'
-import axios, { AxiosInstance, CreateAxiosDefaults } from 'axios'
-import { ClientTransaction } from '../../helper/transaction'
 
 export const crawler = async (page: Page): Promise<void> => {
-  const query = {
-    count: 20,
-    product: 'top',
-    querySource: 'typed_query',
-    rawQuery: 'mu'
-  }
+  const query = { rawQuery: 'muutd', count: 20, querySource: 'typed_query', product: 'Top' }
 
-  // // Lấy nội dung response của request
-  // page.on('response', async (response) => {
-  //   const url = response.url()
-  //   if (url.includes('https://x.com/i/api/graphql/')) {
-  //     console.log('[Response URL]:', url)
+  // // search Actions
+  const SearchBtn = await page.waitForSelector('[href="/explore"]')
 
-  //     try {
-  //       const responseBody = await response.json() // Parse JSON từ response
-  //       console.log('Response Body:', responseBody)
-  //     } catch (error) {
-  //       console.log('Không thể parse JSON:', error)
-  //     }
-  //   }
-  // })
+  console.log(SearchBtn, 'search')
 
-  // // // search Actions
-  // const SearchBtn = await page.waitForSelector('[href="/explore"]')
+  if (SearchBtn) SearchBtn.click()
 
-  // console.log(SearchBtn, 'search')
+  await page.waitForNetworkIdle({ idleTime: 500 })
 
-  // if (SearchBtn) SearchBtn.click()
-
-  // await page.waitForNetworkIdle({ idleTime: 500 })
-
-  // await page.waitForSelector('[data-testid="SearchBox_Search_Input"]')
-  // await page.type('input[data-testid="SearchBox_Search_Input"]', 'mu utd', { delay: 50 })
-  // await page.keyboard.press('Enter')
+  await page.waitForSelector('[data-testid="SearchBox_Search_Input"]')
+  await page.type('input[data-testid="SearchBox_Search_Input"]', 'mu utd', { delay: 50 })
+  await page.keyboard.press('Enter')
 
   let accessToken = ''
   let csrfToken = ''
-
-  // const queryRawEncode = encodeToJson(query.rawQuery)
 
   const getToken = (): Promise<void> => {
     return new Promise((resolve) => {
@@ -56,8 +30,6 @@ export const crawler = async (page: Page): Promise<void> => {
           if (reqHeaders['authorization'] && reqHeaders['x-csrf-token']) {
             accessToken = reqHeaders['authorization']
             csrfToken = reqHeaders['x-csrf-token']
-            defaultHeaders.Authorization = accessToken
-            defaultHeaders['x-csrf-token'] = csrfToken
 
             console.log('Access Token:', accessToken)
             console.log('CSRF Token:', csrfToken)
@@ -73,32 +45,6 @@ export const crawler = async (page: Page): Promise<void> => {
 
   await getToken()
 
-  console.log(defaultHeaders, 'deheader')
-
-  const session: AxiosInstance = axios.create({
-    ...({ defaultHeaders } as CreateAxiosDefaults<any>)
-  })
-
-  ;(async () => {
-    try {
-      const response = await handleXMigration(session)
-      const method = 'POST'
-      const path = '/1.1/jot/client_eventS.json'
-
-      if (!response) {
-        console.log('migration error')
-        return
-      }
-
-      const ct = new ClientTransaction(response)
-      const transactionId = ct.generateTransactionId(method, path)
-      console.log('Transaction ID:', transactionId)
-    } catch (error) {
-      console.error('Error:', error)
-    }
-  })()
-  // await page.goto(`https://x.com/search?q=${queryRawEncode}&src=typed_query&f=top`)
-
   console.log('Lấy thành công Access Token & CSRF Token!')
 
   const queryEndCode = encodeToJson(query)
@@ -112,7 +58,6 @@ export const crawler = async (page: Page): Promise<void> => {
       queryId: queryId,
       _accessToken: string,
       _csrfToken: string
-      // transactionId: string
     ) {
       const response = await fetch(
         `https://x.com/i/api/graphql/${queryId}/SearchTimeline?variables=${query}&features=${feat}`,
@@ -121,15 +66,19 @@ export const crawler = async (page: Page): Promise<void> => {
           headers: {
             authorization: _accessToken,
             'x-csrf-token': _csrfToken,
-            referer: 'https://x.com/search?q=mu&src=typed_query&f=top',
+            referer: 'https://x.com/search?q=mu&src=typed_query&f=Top',
             'user-agent':
-              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36'
-            // 'x-client-transaction-id': transactionId
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
+            'x-client-transaction-id':
+              'gF/ArdqnDhlJ2Skeqd6CM1EVpPYvnGar8uKMGMvI+ymONyRsCgILSn63usHzVIHY2TdhAYP7rgcEKXjj3byKKVxcNBH+gw',
+            'x-twitter-active-user': 'yes',
+            'x-twitter-auth-type': 'OAuth2Session',
+            'x-twitter-client-language': 'vi',
+            'content-type': 'application/json'
           },
           credentials: 'include'
         }
       )
-      // const response = await fetch(url)
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`)
       }
