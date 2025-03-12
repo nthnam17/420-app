@@ -35,4 +35,13 @@ export const IpcMainActions = (): void => {
 
     createWorker(lstUser, 'post_tweet')
   })
+
+  ipcMain.handle('action_uploadMedia', async (_, type, payload) => {
+    const lstUser = await getOneUser(1)
+    if (!lstUser) {
+      return
+    }
+
+    createWorker(lstUser, 'upload_media')
+  })
 }

@@ -9,6 +9,7 @@ import { IKeyMessageWorker } from '../types/worker'
 import { seedingProfile } from '../actions/seeding-profile'
 import { crawler } from '../actions/crawler'
 import { postTweet } from '../actions/post'
+import { uploadMedia } from '../actions/upload-media'
 // import { IPreixActions } from '../types/worker'
 
 export class JobManagers {
@@ -53,6 +54,10 @@ export class JobManagers {
 
         case 'post_tweet':
           await postTweet(page)
+          break
+
+        case 'upload_media':
+          await uploadMedia(page)
           break
       }
 

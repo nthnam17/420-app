@@ -6,5 +6,6 @@ export const ActionApi: IIpcCustomRenderer<ActionArgRoutes> = {
   seeding: async () => window.api.action.seeding(''),
   seeding_profile: async () => window.api.action.seeding_profile(''),
   crawler: async () => window.api.action.crawler(''),
-  createTweet: async () => window.api.action.createTweet('')
+  createTweet: async () => window.api.action.createTweet(''),
+  uploadMedia: async () => window.api.action.uploadMedia(''),
 }

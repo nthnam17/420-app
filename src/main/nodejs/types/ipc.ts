@@ -41,6 +41,7 @@ export type ActionArgRoutes = {
   seeding_profile: { ret: boolean }
   crawler: { ret: boolean }
   createTweet: { ret: boolean }
+  uploadMedia: { ret: boolean }
 }
 
 export type EventKey = keyof PreloadEventMap

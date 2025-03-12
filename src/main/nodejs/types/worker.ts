@@ -10,6 +10,7 @@ export type IKeyMessageWorker =
   | 'seeding_profile'
   | 'crawler'
   | 'post_tweet'
+  | 'upload_media'
 
 export interface IResultMessageWorker<T> {
   key: IKeyMessageWorker

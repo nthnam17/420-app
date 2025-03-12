@@ -58,6 +58,7 @@ export type ActionArgRoutes = {
   await: { args: IPayloadStartAction; ret: boolean }
   crawler: { ret: boolean }
   createTweet: { ret: boolean }
+  uploadMedia: { ret: boolean }
 }
 
 export type EventKey = keyof PreloadEventMap

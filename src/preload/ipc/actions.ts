@@ -8,5 +8,6 @@ export const IpcRendererActions: IIpcCustomRenderer<ActionArgRoutes> = {
   stop: async (payload) => ipcRendererInvoke('action_stop', payload),
   await: async (payload) => ipcRendererInvoke('action_await', payload),
   crawler: async () => ipcRendererInvoke('action_crawler', ''),
-  createTweet: async () => ipcRendererInvoke('action_createTweet', '')
+  createTweet: async () => ipcRendererInvoke('action_createTweet', ''),
+  uploadMedia: async () => ipcRendererInvoke('action_uploadMedia', '')
 }
