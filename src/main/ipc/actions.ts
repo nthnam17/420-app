@@ -32,6 +32,7 @@ export const IpcMainActions = (): void => {
     if (!lstUser) {
       return
     }
+
     createWorker(lstUser, 'post_tweet')
   })
 }

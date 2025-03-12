@@ -74,3 +74,28 @@ export const defaultFeatures: Features = {
   responsive_web_grok_image_annotation_enabled: true,
   responsive_web_enhance_cards_enabled: false
 }
+
+interface IHeaders {
+  'Accept-Language': string
+  'Cache-Control': string
+  Referer: string
+  'User-Agent': string
+  'X-Twitter-Active-User': string
+  'X-Twitter-Client-Language': string
+  Authorization: string
+  Accept: string
+  'x-csrf-token': string
+}
+
+export const defaultHeaders: IHeaders = {
+  'Accept-Language': 'en-US,en;q=0.9',
+  'Cache-Control': 'no-cache',
+  Referer: 'https://x.com',
+  'User-Agent':
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
+  'X-Twitter-Active-User': 'yes',
+  'X-Twitter-Client-Language': 'en',
+  Authorization: '',
+  Accept: '',
+  'x-csrf-token': ''
+}

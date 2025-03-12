@@ -1,4 +1,4 @@
-import { Browser, Page } from 'puppeteer'
+import { Browser } from 'puppeteer'
 import { Users } from '../../../modules/entities/users.entity'
 
 export const login = async (browser: Browser, userData: Users): Promise<any> => {
@@ -6,7 +6,6 @@ export const login = async (browser: Browser, userData: Users): Promise<any> => 
     {
       name: 'ct0',
       value:
-        userData.cookie ??
         'e0bfc636189736b5c80337e96aba313a5073b3c40f3c32fe54a83c930965f1aee7617006abf7a1185f06604091080c376f48ed56f2ef69f7207e5a2a45d243238842023ee19554ab9d6e78e4f87cb1f2',
       domain: '.x.com',
       path: '/',
@@ -18,7 +17,7 @@ export const login = async (browser: Browser, userData: Users): Promise<any> => 
     },
     {
       name: 'auth_token',
-      value: userData.token ?? '4b5b9d9f1b8020b613a8aa397c5a2a1b0a09f39f',
+      value: '4b5b9d9f1b8020b613a8aa397c5a2a1b0a09f39f',
       domain: '.x.com',
       path: '/',
       expires: 1775655357.62032,
@@ -42,12 +41,10 @@ export const login = async (browser: Browser, userData: Users): Promise<any> => 
 
   await page.waitForNetworkIdle({ idleTime: 2000 })
 
-  console.log(userData, 'userData')
+  const linkLogin = await page.$('[data-testid="loginButton"]')
 
-  const linkLogin = await page.$$('a')
-
-  if (linkLogin && linkLogin.length >= 4) {
-    linkLogin[4].click()
+  if (linkLogin) {
+    linkLogin.click()
     await page.waitForNetworkIdle({ idleTime: 2000 })
     ///////////////////////////////////////////////////////////////////////////////////`
     // Select the user input
@@ -87,7 +84,7 @@ export const login = async (browser: Browser, userData: Users): Promise<any> => 
 
     // userData.token = token ?? ''
     // userData.cookie = cookie ?? ''
-
-    return { userData, page }
   }
+
+  return page
 }

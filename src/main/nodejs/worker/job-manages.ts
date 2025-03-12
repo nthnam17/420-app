@@ -34,7 +34,9 @@ export class JobManagers {
   ): Promise<boolean> {
     try {
       console.log(`[Khởi tạo module thành công`)
-      const { dataUserUpdate, page } = await login(browser, account)
+      const page = await login(browser, account)
+
+      console.log(type)
 
       switch (type) {
         case 'seeding':
