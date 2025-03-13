@@ -1,7 +1,9 @@
 import path from 'path'
 import { Page } from 'puppeteer'
-import fs from 'fs/promises'
+import fs from 'fs'
 import { evaluateWithParams } from '../../helper/crawler'
+import { createHash, randomBytes } from 'crypto'
+import { IMediaResponseInit } from '../../types/actions'
 
 export const uploadMedia = async (page: Page): Promise<void> => {
   let accessToken = ''
@@ -40,38 +42,37 @@ export const uploadMedia = async (page: Page): Promise<void> => {
       '15dvwB71HyZTVaoYSmqYEWzgqPW0QeRsqMWQ1VgB0NgA/DDSGah1yHkedcaJT45NfqY7VtSI4tXtqryqxCQ/kLkOxm1L1A',
     'x-twitter-active-user': 'yes',
     'x-twitter-auth-type': 'OAuth2Session',
-    'x-twitter-client-language': 'vi',
-    'content-type': 'application/json'
+    'x-twitter-client-language': 'vi'
   }
 
   const url = 'https://upload.x.com/i/media/upload.json'
 
-  const publicPath = path.join(__dirname, 'public')
+  const publicPath = path.join(__dirname, '../../resources')
 
   const getFile = async (
     publicPath: string,
     filename: string
-  ): Promise<{ fileType: string; fileSize: number }> => {
+  ): Promise<{ fileType: string; fileSize: number; filePath: string }> => {
     let fileType = ''
     let fileSize = 0
-    const files = await fs.readdir(publicPath)
+    let filePath = ''
+    const files = fs.readdirSync(publicPath)
 
     const file = files.find((f) => f.startsWith(filename))
 
     if (file) {
-      const filePath = path.join(publicPath, file)
-      fileType = path.extname(file)
-      fileSize = (await fs.stat(filePath)).size
+      filePath = path.join(publicPath, file)
+      const _fileType = path.extname(file)
+      fileSize = fs.statSync(filePath).size
 
-      console.log('File tìm thấy:', filePath)
-      console.log('Đuôi file:', fileSize)
+      fileType = _fileType.replace(/\./g, '')
     } else {
       console.log("Không tìm thấy file có tên 'upload1'")
     }
-    return { fileSize, fileType }
+    return { fileSize, fileType, filePath }
   }
 
-  const { fileSize, fileType } = await getFile(publicPath, 'upload1')
+  const { fileSize, fileType, filePath } = await getFile(publicPath, 'upload1')
 
   const params = {
     command: 'INIT',
@@ -80,9 +81,9 @@ export const uploadMedia = async (page: Page): Promise<void> => {
     media_category: 'tweet_image'
   }
 
-  const resInit = await evaluateWithParams(
+  const resInit: IMediaResponseInit = await evaluateWithParams(
     page,
-    async function uploadFile(
+    async function uploadInit(
       url: string,
       params: {
         command: string
@@ -96,15 +97,11 @@ export const uploadMedia = async (page: Page): Promise<void> => {
         `${url}?command=${params.command}&total_bytes=${params.total_bytes}&media_type=${params.media_type}&media_category=${params.media_category}`,
         {
           method: 'POST',
-          headers: {
-            header
-          },
+          headers: header,
           credentials: 'include'
         }
       )
       if (!response.ok) {
-        console.log(response)
-
         throw new Error(`HTTP error! Status: ${response.status}`)
       }
       const data = await response.json()
@@ -118,77 +115,84 @@ export const uploadMedia = async (page: Page): Promise<void> => {
     return
   }
 
-  const uploadFile = async (
-    filePath: string,
-    url: string,
-    mediaId: string,
-    debug: boolean = false,
-    fileSize: number
-  ) => {
-    const fileStream = await fs.createReadStream(filePath, { highWaterMark: 4 * 1024 * 1024 })
-    const progressBar = readline.createInterface({ input: process.stdin, output: process.stdout })
-
-    let i = 0
-    let uploadedBytes = 0
+  const prepareFileChunks = async (filePath: string) => {
+    const fileStream = fs.createReadStream(filePath, { highWaterMark: 4 * 1024 * 1024 })
+    const chunks: Buffer[] = []
 
     for await (const chunk of fileStream) {
-      const params = new URLSearchParams({
-        command: 'APPEND',
-        media_id: mediaId,
-        segment_index: i.toString()
-      })
+      chunks.push(chunk)
+    }
 
-      try {
-        const pad = randomBytes(16).toString('hex')
-        const boundary = `----WebKitFormBoundary${pad}`
-        const data = Buffer.concat([
-          Buffer.from(
-            `--${boundary}\r\nContent-Disposition: form-data; name=\"media\"; filename=\"blob\"\r\nContent-Type: application/octet-stream\r\n\r\n`
-          ),
-          chunk,
-          Buffer.from(`\r\n--${boundary}--\r\n`)
-        ])
+    return chunks
+  }
 
-        await fetch(url, {
-          method: 'POST',
-          body: data,
-          headers,
-          query: params
+  const hashMedia = async (filePath: string): Promise<string> => {
+    const fileBuffer = fs.readFileSync(filePath)
+
+    const md5Hash = createHash('md5').update(fileBuffer).digest('hex')
+
+    return md5Hash
+  }
+
+  const chunks = await prepareFileChunks(filePath)
+
+  await evaluateWithParams(
+    page,
+    async function uploadChunks(chunks: Buffer[], url: string, mediaId: string, header: any) {
+      let i = 0
+      for (const chunk of chunks) {
+        const params = new URLSearchParams({
+          command: 'APPEND',
+          media_id: mediaId,
+          segment_index: i.toString()
         })
-      } catch (error) {
-        if (debug) console.error('Failed to upload chunk, trying alternative method:', error)
+
         try {
           const formData = new FormData()
           formData.append('media', new Blob([chunk]))
-          await fetch(url, {
+          await fetch(`${url}?${params}`, {
             method: 'POST',
             body: formData,
-            query: params
+            headers: header,
+            credentials: 'include'
           })
         } catch (error) {
-          if (debug) console.error('Failed to upload chunk:', error)
-          return
+          console.error('Failed to upload chunk', error)
         }
+
+        i++
+      }
+    },
+    [chunks, url, resInit.media_id_string, headerUpdate]
+  )
+
+  const codeHashed = await hashMedia(filePath)
+
+  const resFinalize = await evaluateWithParams(
+    page,
+    async function uploadFinalize(mediaId: string, url: string, header: any, md5Hash: string) {
+      const params = new URLSearchParams({
+        command: 'FINALIZE',
+        media_id: mediaId,
+        original_md5: md5Hash
+      })
+
+      const res = await fetch(`${url}?${params}`, {
+        method: 'POST',
+        headers: header,
+        credentials: 'include'
+      })
+
+      if (!res.ok) {
+        console.log(`Upload Finalize error code: ${res.status}`)
       }
 
-      uploadedBytes += chunk.length
-      progressBar.write(
-        `\rUploading: ${filePath} - ${((uploadedBytes / fileSize) * 100).toFixed(2)}%`
-      )
-      i++
-    }
-    progressBar.close()
-  }
+      const data = res.json()
 
-  queryString {
-    command: FINALIZE
-media_id: 1899824011422621696
-original_md5: a163a41f45e6e644ccce0c35de043d07
-  }
-  // Đọc toàn bộ nội dung của file dưới dạng Buffer
-  const fileBuffer = readFileSync(filePath)
+      return data
+    },
+    [resInit.media_id_string, url, headerUpdate, codeHashed]
+  )
 
-  // Tạo hash MD5
-  const md5Hash = createHash('md5').update(fileBuffer).digest('hex')
-  // const checkSizeUpload = () => {}
+  console.log(resFinalize, 'finaly')
 }

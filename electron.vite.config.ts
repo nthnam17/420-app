@@ -12,6 +12,7 @@ export default defineConfig({
         '@preload': resolve('src/preload')
       }
     },
+    publicDir: 'resources',
     worker: {
       format: 'es'
     }

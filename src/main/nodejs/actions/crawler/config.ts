@@ -75,7 +75,7 @@ export const defaultFeatures: Features = {
   responsive_web_enhance_cards_enabled: false
 }
 
-interface IHeaders {
+export interface IHeaders {
   'Accept-Language': string
   'Cache-Control': string
   Referer: string
@@ -85,6 +85,9 @@ interface IHeaders {
   Authorization: string
   Accept: string
   'x-csrf-token': string
+  'x-twitter-auth-type': string
+  'x-client-transaction-id': string
+  'content-type': string
 }
 
 export const defaultHeaders: IHeaders = {
@@ -97,5 +100,9 @@ export const defaultHeaders: IHeaders = {
   'X-Twitter-Client-Language': 'en',
   Authorization: '',
   Accept: '',
-  'x-csrf-token': ''
+  'x-csrf-token': '',
+  'x-twitter-auth-type': 'OAuth2Session',
+  'x-client-transaction-id':
+    '15dvwB71HyZTVaoYSmqYEWzgqPW0QeRsqMWQ1VgB0NgA/DDSGah1yHkedcaJT45NfqY7VtSI4tXtqryqxCQ/kLkOxm1L1A',
+  'content-type': 'application/json'
 }

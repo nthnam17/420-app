@@ -6,7 +6,7 @@ export const login = async (browser: Browser, userData: Users): Promise<any> => 
     {
       name: 'ct0',
       value:
-        'e0bfc636189736b5c80337e96aba313a5073b3c40f3c32fe54a83c930965f1aee7617006abf7a1185f06604091080c376f48ed56f2ef69f7207e5a2a45d243238842023ee19554ab9d6e78e4f87cb1f2',
+        '8c430d92ac60df96aed4f0034f8f3e63c711fb6d4299b1f8acac3899ff94e0a17295b5fa196e7877da9b97e51cebb8079983656c9bf85e945b783521c083ac34e7db75908ce5bee0f1008b73929531e0',
       domain: '.x.com',
       path: '/',
       expires: 1775655357.935068,
@@ -17,7 +17,7 @@ export const login = async (browser: Browser, userData: Users): Promise<any> => 
     },
     {
       name: 'auth_token',
-      value: '4b5b9d9f1b8020b613a8aa397c5a2a1b0a09f39f',
+      value: 'b16e43112716171b55e22339c2d0e2a478635bde',
       domain: '.x.com',
       path: '/',
       expires: 1775655357.62032,

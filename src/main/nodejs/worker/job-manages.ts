@@ -10,6 +10,9 @@ import { seedingProfile } from '../actions/seeding-profile'
 import { crawler } from '../actions/crawler'
 import { postTweet } from '../actions/post'
 import { uploadMedia } from '../actions/upload-media'
+import { seedingWithApi } from '../actions/seeding/seeding-api'
+import { favoritesTweet } from '../actions/favorites-tweet'
+import { reTweet } from '../actions/retweet'
 // import { IPreixActions } from '../types/worker'
 
 export class JobManagers {
@@ -41,7 +44,9 @@ export class JobManagers {
 
       switch (type) {
         case 'seeding':
-          await Seeding(page)
+          // await seedingWithApi(page)
+          // await favoritesTweet(page)
+          await reTweet(page)
           break
         case 'seeding_profile':
           await seedingProfile(page)
