@@ -1,6 +1,6 @@
 import { Page } from 'puppeteer'
 import { delay } from '../../utils'
-import { HOME_URL } from '../constans/navigations'
+import { HOME_URL, LOGIN_URL } from '../constans/navigations'
 
 function extractProtocolAndDns(url: string): { protocol: string; dns: string } {
   const urlPattern = /^(https?):\/\/([^/]+)(\/.*)?$/
@@ -34,4 +34,8 @@ export async function naviagteToPage(page: Page, url: string): Promise<boolean> 
 
 export async function navigateToHome(page: Page): Promise<void> {
   await naviagteToPage(page, HOME_URL)
+}
+
+export async function navigateToLogin(page: Page): Promise<void> {
+  await naviagteToPage(page, LOGIN_URL)
 }
